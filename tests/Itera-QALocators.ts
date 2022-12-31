@@ -1,0 +1,11 @@
+export const namefieldlocator = `id=name`
+export const mobilenumberfieldlocator = `id=phone`
+export const emailaddressfieldlocator = `id=email`
+export const passwordfieldlocator = `id=password`
+export const addressfieldlocator = `id=address`
+export const submitbuttonlocator = `text=submit`
+export const gendermalecheckboxlocator = `id=male`
+export const tuesdaycheckboxlocator = `id=tuesday`
+export const fridaycheckboxlocator = `id=friday`
+export const traveldropdownmenulocator = `xpath=/html/body/div/div[4]/div[2]/div/select`
+export const dropdownnorwaylocator = `xpath=/html/body/div/div[4]/div[2]/div/select/option[2]`
