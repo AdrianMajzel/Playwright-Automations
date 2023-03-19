@@ -1,37 +1,40 @@
 import test, { expect } from "@playwright/test";
+import { DashboardPage } from "./PageObjects/DashboardPage";
+import { LoginPage } from "./PageObjects/LoginPage";
+import {CheckOutPage} from "./PageObjects/CheckOutPage";
 
-test.only("logInAndProductTitle", async ({ page }) => {
+test.only("ClientAppPageObjects", async ({ page }) => {
 
-    const userName = page.locator(`#userEmail`)
-    const userPassword = page.locator(`#userPassword`)
-    const signInBtn = page.locator(`#login`)
-    const products = page.locator(`.card-body`)
+    const email = "adrianmajzel@gmail.com"
+    const password = "Adrian0001"
+    const productName = 'iphone 13 pro'
+    const cardNumber = `4532 6472 2444 0374`
+    const CVCode = `253`
+    const cardHolderName = `Peter Mrkvicka`
+    const expirationMonth = `05`
+    const expirationYear = `23`
+    const country= `India`
+    const loginPage = new LoginPage(page)
+    await loginPage.goTo();
+    await loginPage.validLogin(email,password)
 
-    await page.goto("https://rahulshettyacademy.com/client/")
-    await userName.fill(`adrianmajzel@gmail.com`)
-    await userPassword.fill(`Adrian0001`)
-    await signInBtn.click()
+    const dashBoard = new DashboardPage(page)
+    await dashBoard.addToCart(productName)
 
-    const productname = await page.locator(`.card-body b`).first().textContent()
-
-    //await expect(page.locator(`.card-body b`).first()).toContainText(`zara coat 3`)
-
-    const countproduct = await products.count()
-
-    for (let i = 0; i < countproduct; ++i) {
-        if (await products.nth(i).locator(`b`).textContent() === productname) {
-            await products.nth(i).locator(`text= Add To Cart`).click()
-            break
-        }
-    }
-
-    const cartbtn = page.locator(`[routerlink="/dashboard/cart"]`)
+    const cartbtn = page.locator('[routerlink="/dashboard/cart"]')
     await cartbtn.click()
-
+   
     await page.locator("div li").first().waitFor()
-
-    const cartproduct = page.locator('h3:has-text("zara coat 3")').isVisible
+    const cartproduct = page.locator('h3:has-text(productName)').isVisible
     expect(cartproduct).toBeTruthy()
+   
+    const checkOutPage = new CheckOutPage(page)
+    await checkOutPage.navigateToCheckOut()
+    await checkOutPage.fillPaymentInfo(cardNumber, CVCode, cardHolderName, expirationMonth, expirationYear )
+    await expect(page.locator(`.user__name [type="text"]`).first()).toHaveText(email)
+    await checkOutPage.fillCountryInfo(country)
+
+    await page.pause()
 
     await page.locator(`text=Checkout`).click()
 
@@ -67,9 +70,7 @@ test.only("logInAndProductTitle", async ({ page }) => {
     console.log(ordernumber1)
     const ordernumber2 = ordernumber1[1]
     console.log(ordernumber2)
-    //const ordernumber3 = ordernumber2.splice(0,1)
-    //console.log(ordernumber3)
-
+   
     await page.locator(`[routerlink="/dashboard/myorders"].btn`).click()
 
     const orderlist = page.locator(`tbody .ng-star-inserted`)
@@ -84,6 +85,8 @@ test.only("logInAndProductTitle", async ({ page }) => {
             break
         }
     }
+
+
 
     await page.pause()
 
